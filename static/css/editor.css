@@ -1,0 +1,746 @@
+/* ================================================================
+   CollaBrix Code Editor — VS Code-inspired Dark Theme
+   ================================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #1e1e1e;
+    color: #cccccc;
+}
+
+/* ----------------------------------------------------------------
+   Root Layout
+   ---------------------------------------------------------------- */
+
+#editorDiv {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Top bar */
+#top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #323233;
+    height: 44px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #252526;
+}
+
+.top-logo {
+    height: 28px;
+    width: auto;
+}
+
+/* Main content row */
+#bottom {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ----------------------------------------------------------------
+   Activity Bar (icon tabs on the far left)
+   ---------------------------------------------------------------- */
+
+#sidebar {
+    width: 48px;
+    background-color: #333333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 0;
+    flex-shrink: 0;
+    border-right: 1px solid #252526;
+}
+
+.tab {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 3px 0;
+    opacity: 0.6;
+    transition: opacity 0.15s, background-color 0.15s;
+    border-left: 2px solid transparent;
+}
+
+.tab-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    display: block;
+}
+
+.tab:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.tab.active {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 2px solid #007acc;
+}
+
+/* ----------------------------------------------------------------
+   Side Panel (file explorer / run / users)
+   ---------------------------------------------------------------- */
+
+#ioAreaDiv {
+    width: 240px;
+    min-width: 180px;
+    flex-shrink: 0;
+    background-color: #252526;
+    border-right: 1px solid #333333;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.2s ease, opacity 0.2s ease;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.retracted {
+    width: 0 !important;
+    min-width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* ----------------------------------------------------------------
+   File Explorer Panel
+   ---------------------------------------------------------------- */
+
+#file {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #424242 transparent;
+}
+
+#file::-webkit-scrollbar {
+    width: 5px;
+}
+
+#file::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    border-radius: 3px;
+}
+
+/* Action bar container */
+#file-box {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #333333;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #252526;
+}
+
+/* ----------------------------------------------------------------
+   Explorer Panel — Header Rows
+   ---------------------------------------------------------------- */
+
+/* Top "EXPLORER" label */
+.explorer-section-header {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 12px;
+    background-color: #252526;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+}
+
+.explorer-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #bbbcbd;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+/* ----------------------------------------------------------------
+   Files Panel Header (workspace label + hover-reveal icons)
+   ---------------------------------------------------------------- */
+
+.files-panel-header {
+    flex-shrink: 0;
+    background-color: #252526;
+    border-bottom: 1px solid #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* replaces old #file-box */
+#file-box {
+    flex-shrink: 0;
+}
+
+.files-panel-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 26px;
+    padding: 0 4px 0 8px;
+}
+
+.files-panel-workspace {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #cccccc;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+}
+
+.chevron-icon {
+    flex-shrink: 0;
+    color: #c5c5c5;
+    transition: transform 0.12s ease;
+}
+
+/* Action icon buttons — hidden by default, shown on row hover */
+.explorer-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s;
+}
+
+.files-panel-title-row:hover .explorer-header-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hdr-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: #c5c5c5;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background-color 0.1s, color 0.1s;
+    transform: none;
+    box-shadow: none;
+    margin: 0;
+}
+
+.hdr-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.11);
+    color: #ffffff;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.hdr-icon-btn svg {
+    pointer-events: none;
+}
+
+/* ----------------------------------------------------------------
+   File Tree Items  (.tabEditor and .folder)
+   ---------------------------------------------------------------- */
+
+/* File row */
+.tabEditor {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 0 0 26px;
+    color: #cccccc;
+    font-size: 13px;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    transition: background-color 0.06s;
+    flex-shrink: 0;
+    gap: 5px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    transform: none;
+    box-shadow: none;
+    line-height: 22px;
+}
+
+.tabEditor:hover {
+    background-color: #2a2d2e;
+    color: #e8e8e8;
+    transform: none;
+    box-shadow: none;
+}
+
+.tabEditor.active {
+    background-color: #094771;
+    color: #ffffff;
+}
+
+/* Folder row */
+.folder {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 0 0 8px;
+    color: #cccccc;
+    font-size: 13px;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    transition: background-color 0.06s;
+    flex-shrink: 0;
+    gap: 4px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    transform: none;
+    box-shadow: none;
+    line-height: 22px;
+}
+
+.folder:hover {
+    background-color: #2a2d2e;
+    color: #e8e8e8;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ----------------------------------------------------------------
+   Chevron (expand/collapse triangle for folders)
+   ---------------------------------------------------------------- */
+
+.folder-chevron {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.12s ease;
+    color: #c5c5c5;
+}
+
+.folder-chevron svg {
+    pointer-events: none;
+}
+
+.folder.collapsed .folder-chevron {
+    transform: rotate(0deg);   /* ▶ pointing right */
+}
+
+.folder.expanded .folder-chevron {
+    transform: rotate(90deg);  /* rotates to ▼ */
+}
+
+/* ----------------------------------------------------------------
+   Folder children container
+   ---------------------------------------------------------------- */
+
+.folder-children {
+    display: none;
+}
+
+.folder-children.open {
+    display: block;
+}
+
+/* ----------------------------------------------------------------
+   File + Folder icons (.item-icon)
+   ---------------------------------------------------------------- */
+
+.item-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 800;
+    font-family: 'Consolas', monospace;
+    line-height: 1;
+    background-color: #6a9bd2;
+    color: #fff;
+}
+
+/* Per-extension color badges */
+.tabEditor[data-ext="py"]     .item-icon { background-color: #3572a5; }
+.tabEditor[data-ext="js"]     .item-icon { background-color: #f1e05a; color: #1a1a1a; }
+.tabEditor[data-ext="ts"]     .item-icon { background-color: #2b7489; }
+.tabEditor[data-ext="json"]   .item-icon { background-color: #f1e05a; color: #1a1a1a; }
+.tabEditor[data-ext="html"]   .item-icon { background-color: #e34c26; }
+.tabEditor[data-ext="css"]    .item-icon { background-color: #563d7c; }
+.tabEditor[data-ext="scss"]   .item-icon { background-color: #c6538c; }
+.tabEditor[data-ext="cpp"]    .item-icon,
+.tabEditor[data-ext="c"]      .item-icon { background-color: #f34b7d; }
+.tabEditor[data-ext="java"]   .item-icon { background-color: #b07219; }
+.tabEditor[data-ext="go"]     .item-icon { background-color: #00add8; }
+.tabEditor[data-ext="rs"]     .item-icon { background-color: #dea584; color: #1a1a1a; }
+.tabEditor[data-ext="rb"]     .item-icon { background-color: #701516; }
+.tabEditor[data-ext="md"]     .item-icon { background-color: #083fa1; }
+.tabEditor[data-ext="txt"]    .item-icon { background-color: #555; }
+.tabEditor[data-ext="sh"]     .item-icon { background-color: #89e051; color: #1a1a1a; }
+
+/* Extension label inside icon */
+.tabEditor[data-ext="py"]     .item-icon::after { content: "py"; }
+.tabEditor[data-ext="js"]     .item-icon::after { content: "js"; }
+.tabEditor[data-ext="ts"]     .item-icon::after { content: "ts"; }
+.tabEditor[data-ext="json"]   .item-icon::after { content: "{}"; }
+.tabEditor[data-ext="html"]   .item-icon::after { content: "<>"; }
+.tabEditor[data-ext="css"]    .item-icon::after { content: "cs"; }
+.tabEditor[data-ext="scss"]   .item-icon::after { content: "sc"; }
+.tabEditor[data-ext="cpp"]    .item-icon::after { content: "c+"; }
+.tabEditor[data-ext="c"]      .item-icon::after { content: "c"; }
+.tabEditor[data-ext="java"]   .item-icon::after { content: "ja"; }
+.tabEditor[data-ext="go"]     .item-icon::after { content: "go"; }
+.tabEditor[data-ext="rs"]     .item-icon::after { content: "rs"; }
+.tabEditor[data-ext="rb"]     .item-icon::after { content: "rb"; }
+.tabEditor[data-ext="md"]     .item-icon::after { content: "md"; }
+.tabEditor[data-ext="txt"]    .item-icon::after { content: "tx"; }
+.tabEditor[data-ext="sh"]     .item-icon::after { content: "sh"; }
+
+/* Generic fallback icon — tiny document symbol */
+.tabEditor .item-icon::after { content: "f"; }
+
+/* Folder icon — yellow square with distinct label */
+.folder .item-icon {
+    background-color: #dcb67a;
+    color: #1a1a1a;
+}
+.folder .item-icon::after { content: ""; }
+
+/* File name span */
+.item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 22px;
+}
+
+/* ----------------------------------------------------------------
+   Inline rename input (New Folder / rename)
+   ---------------------------------------------------------------- */
+
+.inline-rename-input {
+    flex: 1;
+    height: 18px;
+    background-color: #3c3c3c;
+    border: 1px solid #007acc;
+    border-radius: 2px;
+    color: #cccccc;
+    font-size: 13px;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    padding: 0 4px;
+    outline: none;
+    min-width: 0;
+}
+
+/* ----------------------------------------------------------------
+   Inline rename row
+   ---------------------------------------------------------------- */
+
+.inline-rename-row {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 0 0 26px;
+    gap: 5px;
+    flex-shrink: 0;
+    background-color: #252526;
+}
+
+
+
+/* ----------------------------------------------------------------
+   Run Panel
+   ---------------------------------------------------------------- */
+
+#run {
+    padding: 10px;
+    color: #cccccc;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    gap: 0;
+}
+
+#run p {
+    font-size: 11px;
+    color: #858585;
+    margin: 10px 0 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 600;
+}
+
+#run textarea {
+    background-color: #1e1e1e;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    padding: 7px 9px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    resize: vertical;
+    width: 100%;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.15s;
+    display: block;
+    margin-bottom: 8px;
+}
+
+#run textarea:focus {
+    border-color: #007acc;
+}
+
+/* Run button */
+#run > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background-color: #0d7d0c;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    width: 100%;
+    height: auto;
+    margin: 0 0 6px 0;
+    transition: background-color 0.15s;
+    transform: none;
+    box-shadow: none;
+}
+
+#run > button:hover {
+    background-color: #129c11;
+    transform: none;
+    box-shadow: none;
+}
+
+select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#inputArea {
+    flex: 1;
+}
+
+/* ----------------------------------------------------------------
+   Users Panel
+   ---------------------------------------------------------------- */
+
+#users {
+    padding: 10px;
+    color: #cccccc;
+}
+
+.user {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.userWrapper {
+    width: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.userDisplay {
+    font-size: 18px;
+    height: 44px;
+    width: 44px;
+    background-color: #3a3d41;
+    border-radius: 8px;
+    border: 2px solid #474747;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cccccc;
+    font-weight: 700;
+}
+
+.userName {
+    font-size: 11px;
+    max-width: 64px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #858585;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* ----------------------------------------------------------------
+   Code Editor Area
+   ---------------------------------------------------------------- */
+
+#textAreaDiv {
+    flex: 1;
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+}
+
+#textAreaDiv > div {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* CodeMirror overrides */
+.CodeMirror {
+    height: 100% !important;
+    font-size: 14px;
+    font-family: 'Consolas', 'Cascadia Code', 'Courier New', monospace;
+    line-height: 1.6;
+    background-color: #1e1e1e;
+}
+
+.CodeMirror-scroll {
+    padding: 0 0 0 4px;
+}
+
+.CodeMirror-gutters {
+    background-color: #1e1e1e;
+    border-right: 1px solid #2d2d2d;
+}
+
+.CodeMirror-linenumber {
+    color: #3c3c3c;
+    padding: 0 10px 0 8px;
+}
+
+.CodeMirror.result-codemirror {
+    height: 200px !important;
+}
+
+/* ----------------------------------------------------------------
+   Context Menu Popup
+   ---------------------------------------------------------------- */
+
+#popup {
+    position: fixed;
+    display: none;
+    background-color: #252526;
+    border: 1px solid #454545;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    padding: 4px;
+    border-radius: 5px;
+    min-width: 130px;
+    height: auto;
+    width: auto;
+}
+
+.button-popup {
+    display: flex;
+    align-items: center;
+    color: #cccccc;
+    width: 100%;
+    height: 28px;
+    font-size: 13px;
+    padding: 0 12px;
+    background-color: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    margin: 0;
+    transform: none;
+    box-shadow: none;
+    text-align: left;
+    justify-content: flex-start;
+    font-family: inherit;
+}
+
+.button-popup:hover {
+    background-color: #094771 !important;
+    color: #ffffff;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ----------------------------------------------------------------
+   Cursor Username Widget
+   ---------------------------------------------------------------- */
+
+.username-widget {
+    background-color: #094771;
+    border: 1px solid #3a6fa3;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #7eb5f4;
+    white-space: nowrap;
+    pointer-events: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
