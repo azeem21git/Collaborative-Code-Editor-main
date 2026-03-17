@@ -9,6 +9,8 @@ A **real-time, web-based** collaborative code editor that allows multiple users 
 - ✅ **Code Execution Support** - Runs code in different programming languages.
 - ✅ **Syntax Highlighting** - Improves readability with **CodeMirror Editor**.
 - ✅ **File Management** - Allows users to create, delete and rename files.
+- ✅ **AI Code Generation (Gemini)** - Generate code with **AI Gen** button or **Ctrl+Space**.
+- ✅ **Direct Local Save** - Open a local folder and write files directly to disk with autosave + **Ctrl/Cmd+S**.
 
 
 
@@ -35,6 +37,27 @@ A **real-time, web-based** collaborative code editor that allows multiple users 
    # or replace "privateip" with your private IP address (e.g., 10.12.233.104)
    http://privateip:5000
    ```
+
+## 🤖 Gemini AI Setup (Free Tier)
+
+Set your Gemini API key before starting the server:
+
+```bash
+export GEMINI_API_KEY="your_gemini_api_key_here"
+python3 app.py
+```
+
+- Use **AI Gen** in the bottom terminal header, or press **Ctrl+Space** in the editor.
+- The backend route is: `/api/generate-code`.
+- Model used: `gemini-1.5-flash`.
+- Output is sanitized to return raw code only (no markdown fences/explanations).
+
+## 💾 Direct Local Save
+
+- Click **Open Folder** in Explorer to grant read/write access to a local directory.
+- The selected directory handle is persisted with IndexedDB and restored on refresh (permission permitting).
+- File/folder creation in the explorer writes physical files/folders into that selected directory.
+- Local-backed files autosave while typing, and you can force-save with **Ctrl+S / Cmd+S**.
 
 ## 📸 Demo
 ### Home Page

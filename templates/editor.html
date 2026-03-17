@@ -21,7 +21,7 @@
 
         <div id="sidebar">
             <div class="tab active" onclick="toggleTab('file',event)"><img src="/static/img/open-folder.png" class="tab-icon"></div>
-            <div class="tab" onclick="toggleTab('run', event)"><img src="/static/img/play.png" class="tab-icon"></div>
+            <div class="tab" onclick="openBottomTerminal(event)" title="Open Terminal"><img src="/static/img/play.png" class="tab-icon"></div>
             <div class="tab" onclick="toggleTab('users', event)"><img src="/static/img/person.png" class="tab-icon"></div>
         </div>
 
@@ -70,14 +70,6 @@
 
             </div>
 
-            <div id="run" class="content hidden">
-                <button onclick="fetchData()">Run</button>
-                <p>Input:</p>
-                <textarea id="inputArea"  name="inputArea" rows="10" cols="10"></textarea>
-                <p>Output:</p>
-                <textarea id="outputArea" name="outputArea" rows="10" cols="10"></textarea>
-            </div>
-
             <div id="users" class=" content hidden"  >
                 <div class="user" style="display: flex; flex-wrap: wrap; flex-direction: row;">
                     <div class="userWrapper">
@@ -89,9 +81,47 @@
 
         </div>
 
-        <div id="textAreaDiv">
-            <div id="editor1">
-                <textarea id="textEditor1" rows="100" cols="100">#hello1</textarea>
+        <div id="mainPane">
+            <div id="textAreaDiv">
+                <div id="editor1">
+                    <textarea id="textEditor1" rows="100" cols="100">#hello1</textarea>
+                </div>
+            </div>
+
+            <div id="bottomTerminal">
+                <div id="terminalResizeHandle" title="Drag to resize terminal"></div>
+
+                <div class="terminal-header">
+                    <div class="terminal-tabs">
+                        <button id="terminalTabTerminal" class="terminal-tab-btn active" onclick="switchTerminalTab('terminal')">Terminal</button>
+                        <button id="terminalTabOutput" class="terminal-tab-btn" onclick="switchTerminalTab('output')">Output</button>
+                        <button id="terminalTabDebug" class="terminal-tab-btn" onclick="switchTerminalTab('debug')">Debug Console</button>
+                    </div>
+                    <div class="terminal-header-actions">
+                        <button id="aiGenBtn" class="terminal-ai-btn" onclick="triggerAIGen()">AI Gen</button>
+                        <button id="aiFixBtn" class="terminal-ai-btn" onclick="triggerAIFix()">Fix with AI</button>
+                        <span id="aiGenStatus" class="ai-gen-status" aria-live="polite">AI is thinking<span class="dots">...</span></span>
+                        <button class="terminal-run-btn" onclick="fetchData()">Run</button>
+                        <button id="terminalMinimizeBtn" class="terminal-minimize-btn" onclick="toggleBottomTerminal()" title="Collapse terminal">▾</button>
+                    </div>
+                </div>
+
+                <div class="terminal-content">
+                    <div id="terminalContentTerminal" class="terminal-pane active">
+                        <div class="terminal-label">Input</div>
+                        <textarea id="inputArea" name="inputArea" rows="10" cols="10"></textarea>
+                    </div>
+
+                    <div id="terminalContentOutput" class="terminal-pane">
+                        <div class="terminal-label">Output</div>
+                        <textarea id="outputArea" name="outputArea" rows="10" cols="10"></textarea>
+                    </div>
+
+                    <div id="terminalContentDebug" class="terminal-pane">
+                        <div class="terminal-label">Debug Console</div>
+                        <pre id="debugConsoleArea">No debug messages yet.</pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -102,12 +132,28 @@
         <button class="button-popup" onclick="renameFile()">Rename</button>
     </div>
 
+    <div id="codeFixModal" class="fix-modal" aria-hidden="true">
+        <div class="fix-modal-backdrop" onclick="closeCodeFixModal()"></div>
+        <div class="fix-modal-panel" role="dialog" aria-modal="true" aria-label="AI Code Fix Diff">
+            <div class="fix-modal-header">
+                <h3>AI Code Fix Preview</h3>
+                <button class="fix-close-btn" onclick="closeCodeFixModal()" title="Close">✕</button>
+            </div>
+            <div id="fixDiffContainer" class="fix-diff-container"></div>
+            <div class="fix-modal-footer">
+                <button class="fix-secondary-btn" onclick="closeCodeFixModal()">Cancel</button>
+                <button id="acceptFixBtn" class="fix-primary-btn" onclick="acceptAIFixChanges()">Accept Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/clike/clike.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/closebrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/matchbrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff/5.2.0/diff.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
     <script>
         const room_id = "{{ room_id }}";
