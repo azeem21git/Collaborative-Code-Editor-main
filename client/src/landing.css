@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.landing-mesh {
+	position: absolute;
+	inset: -24%;
+	background:
+		radial-gradient(circle at 20% 22%, rgba(59, 130, 246, 0.32), transparent 42%),
+		radial-gradient(circle at 78% 30%, rgba(168, 85, 247, 0.28), transparent 44%),
+		radial-gradient(circle at 50% 78%, rgba(96, 165, 250, 0.2), transparent 50%);
+	filter: blur(34px);
+	animation: landing-mesh-float 14s ease-in-out infinite alternate;
+	pointer-events: none;
+}
+
+.landing-glow {
+	position: absolute;
+	border-radius: 9999px;
+	filter: blur(84px);
+	opacity: 0.24;
+	pointer-events: none;
+}
+
+.landing-glow--top {
+	width: 360px;
+	height: 360px;
+	top: -120px;
+	left: -80px;
+	background: #3b82f6;
+	animation: landing-glow-drift 16s ease-in-out infinite;
+}
+
+.landing-glow--bottom {
+	width: 400px;
+	height: 400px;
+	right: -120px;
+	bottom: -160px;
+	background: #8b5cf6;
+	animation: landing-glow-drift 18s ease-in-out infinite reverse;
+}
+
+@keyframes landing-mesh-float {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+
+	100% {
+		transform: translate3d(0, -24px, 0) scale(1.05);
+	}
+}
+
+@keyframes landing-glow-drift {
+	0% {
+		transform: translate3d(0, 0, 0);
+	}
+
+	50% {
+		transform: translate3d(12px, -10px, 0);
+	}
+
+	100% {
+		transform: translate3d(-10px, 12px, 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.landing-mesh,
+	.landing-glow--top,
+	.landing-glow--bottom {
+		animation: none;
+	}
+}
